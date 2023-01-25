@@ -19,7 +19,7 @@ class Symbol {
         context.fillText(this.char, this.x * this.fontSize, this.y * this.fontSize);
         this.y += 1;
         
-        if(this.y * this.fontSize > this.canvasHeight) this.y = 0;
+        if(this.y * this.fontSize > this.canvasHeight && Math.random() > 0.98) this.y = 0;
     }
 }
 
@@ -39,8 +39,10 @@ class Effect {
 const effect = new Effect(canvas.width, canvas.height, 25);
 
 function animate() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     effect.symbols.forEach(symbol => symbol.draw(ctx));
     requestAnimationFrame(animate);
 }
 
-//animate();
+animate();
