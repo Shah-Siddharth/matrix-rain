@@ -27,17 +27,25 @@ class Effect {
         this.canvasHeight = canvasHeight;
         this.fontSize = fontSize;
         this.columns = this.canvasWidth / this.fontSize;
-        
+        this.symbols;
+        this.#initializeSymbols();
+    }
+
+    #initializeSymbols() {
         this.symbols = Array.from({length: this.columns}, (elem, i) => {
             return new Symbol(i, 0, this.fontSize, this.canvasHeight);
         });
     }
+
+    resize(newWidth, newHeight) {
+        this.canvasWidth = newWidth;
+        this.canvasHeight = newHeight;
+        this.columns = this.canvasWidth / this.fontSize;
+        this.#initializeSymbols();
+    }
 }
 
 const effect = new Effect(canvas.width, canvas.height, 25);
-
-ctx.font = effect.fontSize + "px monospace";
-ctx.textAlign = "center";
 
 const fps = 30;
 let interval = 1000 / fps; //1000 milliseconds / fps
@@ -52,6 +60,8 @@ function animate(timeStamp) {
         ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#0aff0a";
+        ctx.font = effect.fontSize + "px monospace";
+        ctx.textAlign = "center";
         effect.symbols.forEach(symbol => symbol.draw(ctx));
         timer = 0;
 
@@ -63,3 +73,10 @@ function animate(timeStamp) {
 }
 
 animate(0);
+
+window.addEventListener('resize', function() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    effect.resize(canvas.width, canvas.height);
+    console.log(ctx.font);
+})
