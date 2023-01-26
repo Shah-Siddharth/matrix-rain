@@ -14,8 +14,6 @@ class Symbol {
 
     draw(context) {
         this.char = this.characters.charAt(Math.floor(Math.random() * this.characters.length));
-        context.fillStyle = "#0aff0a";
-        context.font = this.fontSize + "px monospace";
         context.fillText(this.char, this.x * this.fontSize, this.y * this.fontSize);
         this.y += 1;
         
@@ -38,11 +36,30 @@ class Effect {
 
 const effect = new Effect(canvas.width, canvas.height, 25);
 
-function animate() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    effect.symbols.forEach(symbol => symbol.draw(ctx));
+ctx.font = effect.fontSize + "px monospace";
+ctx.textAlign = "center";
+
+const fps = 30;
+let interval = 1000 / fps; //1000 milliseconds / fps
+let lastTime = 0;
+let timer = 0;
+
+function animate(timeStamp) {
+    const dt = timeStamp - lastTime;
+    lastTime = timeStamp;
+
+    if(timer > interval) {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#0aff0a";
+        effect.symbols.forEach(symbol => symbol.draw(ctx));
+        timer = 0;
+
+    } else {
+        timer += dt;
+    }
+
     requestAnimationFrame(animate);
 }
 
-animate();
+animate(0);
